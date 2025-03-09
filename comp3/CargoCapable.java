@@ -1,0 +1,3 @@
+interface CargoCapable {
+    int getCargoCapacity();
+}

@@ -6,25 +6,21 @@ public class Main {
         Project P3 = new Project("P3", Type.Theoretical);
         Project P4 = new Project("P4", Type.Practical);
 
+        Student S1 = new Student("S1", new Project[] { P1, P2 });
+        Student S2 = new Student("S2", new Project[] { P1, P3 });
+        Student S3 = new Student("S3", new Project[] { P3, P4 });
+        Student S4 = new Student("S4", new Project[] { P1, P4 });
 
-        Student S1 = new Student("S1", new Project[]{P1, P2});
-        Student S2 = new Student("S2", new Project[]{P1, P3});
-        Student S3 = new Student("S3", new Project[]{P3, P4});
-        Student S4 = new Student("S4", new Project[]{P1, P4});
+        Teacher T1 = new Teacher("T1", new Project[] { P1, P2 });
+        Teacher T2 = new Teacher("T2", new Project[] { P3, P4 });
+        Teacher T3 = new Teacher("T3", new Project[] { P1, P4 });
+        Teacher T4 = new Teacher("T4", new Project[] { P2, P3 });
 
-        Assigment assigment= new Assigment(new Student[]{S1, S2, S3, S4}, new Project[]{P1, P2, P3, P4});
-        assigment.Assign();
+        Problem P = new Problem(new Student[] { S1, S2, S3, S4 }, new Project[] { P1, P2, P3, P4 },
+                new Teacher[] { T1, T2, T3, T4 });
+        System.out.println(P.toString());
+        P.Solve();
+        System.out.println(P.printSolution());
 
-        System.out.println("students:");
-        System.out.println(S1.toString());
-        System.out.println(S2.toString()); 
-
-        System.out.println("projects:"); 
-        System.out.println(P1.toString()); 
-        System.out.println(P2.toString());
-        
-        System.out.println(assigment.toString());
-
-       
     }
 }
