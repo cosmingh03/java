@@ -9,7 +9,7 @@ public class Main {
         Student S1 = new Student("S1", new Project[] { P1, P2 });
         Student S2 = new Student("S2", new Project[] { P1, P3 });
         Student S3 = new Student("S3", new Project[] { P3, P4 });
-        Student S4 = new Student("S4", new Project[] { P1, P4 });
+        Student S4 = new Student("S4", new Project[] { P4 });
 
         Teacher T1 = new Teacher("T1", new Project[] { P1, P2 });
         Teacher T2 = new Teacher("T2", new Project[] { P3, P4 });

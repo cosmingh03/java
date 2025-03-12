@@ -200,19 +200,62 @@ public class Problem {
     }
 
     /**
-     * Solves the project assignment problem.
-     * Assigns projects to students based on their preferences.
+     * Students with fewer acceptable project options are prioritized in the
+     * allocation
+     * to ensure a more fair distribution of projects.
      */
     public void Solve() {
+        // Check if there is no null/0
+        if (students == null || projects == null || students.length == 0 || projects.length == 0) {
+            return;
+        }
+
         boolean[] assigned = new boolean[projects.length];
 
-        for (Student student : students) {
-            for (int j = 0; j < projects.length; j++) {
-                if (student.isAcceptableProject(projects[j]) && !assigned[j]) {
-                    student.assignProject(projects[j]);
-                    assigned[j] = true;
+        Student[] sortedStudents = new Student[students.length];
+        System.arraycopy(students, 0, sortedStudents, 0, students.length);
+
+        // Sort students by number of acceptable projects (ascending)
+        for (int i = 0; i < sortedStudents.length - 1; i++) {
+            for (int j = i + 1; j < sortedStudents.length; j++) {
+
+                int countI = 0;
+                int countJ = 0;
+
+                // Sort by ascending order of choices (fewer choices first)
+                if (countI > countJ) {
+                    Student temp = sortedStudents[i];
+                    sortedStudents[i] = sortedStudents[j];
+                    sortedStudents[j] = temp;
+                }
+            }
+        }
+
+        // Assign projects to students in priority order
+        for (Student student : sortedStudents) {
+
+            boolean studentAssigned = false;
+
+            // First try to assign from their acceptable projects list
+            for (Project acceptableProject : student.getAcceptableProjects()) {
+                // Find this project in our master projects list
+                for (int j = 0; j < projects.length; j++) {
+                    if (projects[j].equals(acceptableProject) && !assigned[j]) {
+                        student.assignProject(projects[j]);
+                        assigned[j] = true;
+                        studentAssigned = true;
+                        break;
+                    }
+                }
+
+                if (studentAssigned) {
                     break;
                 }
+            }
+
+            // Optional: Log if a student couldn't get assigned
+            if (!studentAssigned) {
+                System.out.println("not assigned: " + student.getName());
             }
         }
     }
