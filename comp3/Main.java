@@ -9,7 +9,7 @@ public class Main {
         airport.addRunway(new Runway("Runway2"));
 
         Flight f1 = new Flight("F1", LocalTime.of(10, 0), LocalTime.of(10, 15));
-        Flight f2 = new Flight("F2", LocalTime.of(10, 20), LocalTime.of(10, 35));
+        Flight f2 = new Flight("F2", LocalTime.of(10, 0), LocalTime.of(10, 15));
         Flight f3 = new Flight("F3", LocalTime.of(11, 0), LocalTime.of(11, 15));
         Flight f4 = new Flight("F4", LocalTime.of(11, 30), LocalTime.of(11, 45));
 
