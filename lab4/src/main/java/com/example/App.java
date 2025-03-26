@@ -1,41 +1,101 @@
 package com.example;
 
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Random;
 import java.util.stream.Collectors;
+
+import com.github.javafaker.Faker;
 
 public class App {
         public static void main(String[] args) {
 
-                Location[] locs = new Location[6];
-                locs[0] = new Location("P0", Type.FRIENDLY);
-                locs[1] = new Location("P1", Type.ENEMY);
-                locs[2] = new Location("P2", Type.FRIENDLY);
-                locs[3] = new Location("P3", Type.ENEMY);
-                locs[4] = new Location("P4", Type.NEUTRAL);
-                locs[5] = new Location("P5", Type.FRIENDLY);
+                Faker faker = new Faker();
+                Random random = new Random();
 
-                Set<Location> friendlyLocs = Arrays.stream(locs)
-                                .filter(location -> location.getType() == Type.FRIENDLY)
-                                .collect(Collectors.toCollection(TreeSet::new));
+                Location[] locs = new Location[15];
 
-                System.out.println("friendly locations:");
+                for (int i = 0; i < locs.length; i++) {
 
-                friendlyLocs.forEach(System.out::println);
+                        int ran = random.nextInt(10);
 
-                List<Location> enemyLocs = Arrays.stream(locs)
-                                .filter(location -> location.getType() == Type.ENEMY)
-                                .collect(Collectors.toCollection(LinkedList::new));
+                        switch (ran % 3) {
+                                case 0:
+                                        locs[i] = new Location(faker.country().name(), Type.FRIENDLY);
+                                        break;
+                                case 1:
+                                        locs[i] = new Location(faker.country().name(), Type.ENEMY);
+                                        break;
+                                case 2:
+                                        locs[i] = new Location(faker.country().name(), Type.NEUTRAL);
+                                        break;
+                        }
 
-                System.out.println("enemy locations:");
+                }
 
-                enemyLocs.stream()
-                                .sorted(Comparator.comparing(Location::getType).thenComparing(Location::getName))
-                                .forEach(System.out::println);
+                Map map = new Map();
+                for (Location loc : locs) {
+                        map.addLocation(loc);
+                }
+
+                int count = 0;
+                int max = 15;
+
+                while (count < max) {
+                        int i = random.nextInt(locs.length);
+                        int j = random.nextInt(locs.length);
+
+                        if (i == j) {
+                                continue;
+                        }
+
+                        double time = random.nextDouble() * 100;
+                        int round = (int) (time * 100);
+
+                        if (round % 3 == 1) {
+                                round = 0;
+                        }
+                        time = (double) round / 100;
+
+                        if (time != 0) {
+                                map.connectLocations(locs[i], locs[j], time);
+                                count++;
+
+                        }
+                }
+
+                List<Location> friendly = Arrays.stream(locs).filter(loc -> loc.isFriendly())
+                                .collect(Collectors.toList());
+                List<Location> enemy = Arrays.stream(locs).filter(loc -> loc.isEnemy()).collect(Collectors.toList());
+                List<Location> neutral = Arrays.stream(locs).filter(loc -> loc.isNeutral())
+                                .collect(Collectors.toList());
+
+                System.out.println("time to friendly locations:");
+
+                for (Location loc : friendly) {
+                        if (loc.equals(locs[0])) {
+                                continue;
+                        }
+                        System.out.println(locs[0].toString() + " to " + loc.toString() + " takes "
+                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc)) + " with a probability of "
+                                        + map.getsafeProbability(locs[0], loc) + "%");
+                }
+
+                System.out.println("time to enemy locations:");
+
+                for (Location loc : enemy) {
+                        System.out.println(locs[0].toString() + " to " + loc.toString() + " takes "
+                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc)) + " with probability "
+                                        + map.getsafeProbability(locs[0], loc) + "%");
+                }
+
+                System.out.println("time to neutral locations:");
+
+                for (Location loc : neutral) {
+                        System.out.println(locs[0].toString() + " to " + loc.toString() + " takes "
+                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc)) + " with probability "
+                                        + map.getsafeProbability(locs[0], loc) + "%");
+                }
 
         }
 

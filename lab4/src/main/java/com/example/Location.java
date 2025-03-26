@@ -39,7 +39,7 @@ public class Location implements Comparable<Location> {
 
     @Override
     public String toString() {
-        return "Location{name='" + name + "', type=" + type + "}";
+        return name;
     }
 
     public boolean isEnemy() {
