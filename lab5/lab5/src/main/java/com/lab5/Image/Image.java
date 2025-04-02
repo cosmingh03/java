@@ -13,7 +13,6 @@ public record Image(
         LocalDate date,
         List<String> tags,
         Path location) {
-
     public Image {
         if (name == null || name.isBlank()) {
             throw new InvalidImageException("invalid name");

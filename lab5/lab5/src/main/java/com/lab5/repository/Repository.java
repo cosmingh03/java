@@ -80,4 +80,110 @@ public class Repository {
         }
         return sb.toString();
     }
+
+    public void updateName(String name, String newName) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or blank");
+        }
+        if (newName == null || newName.isBlank()) {
+            throw new IllegalArgumentException("New name cannot be null or blank");
+        }
+        if (!images.stream().anyMatch(img -> img.name().equals(name))) {
+            throw new IllegalArgumentException("Image with this name does not exist");
+        }
+
+        for (Image img : images) {
+            if (img.name().equals(name)) {
+                images.remove(img);
+                images.add(new Image(newName, img.date(), img.tags(), img.location()));
+                break;
+            }
+        }
+    }
+
+    public void updateLocation(String name, String newLocation) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or blank");
+        }
+        if (newLocation == null || newLocation.isBlank()) {
+            throw new IllegalArgumentException("New location cannot be null or blank");
+        }
+        if (!images.stream().anyMatch(img -> img.name().equals(name))) {
+            throw new IllegalArgumentException("Image with this name does not exist");
+        }
+
+        for (Image img : images) {
+            if (img.name().equals(name)) {
+                images.remove(img);
+                images.add(new Image(img.name(), img.date(), img.tags(), newLocation));
+                break;
+            }
+        }
+    }
+
+    public void updateTags(String name, List<String> newTags) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or blank");
+        }
+        if (newTags == null || newTags.isEmpty()) {
+            throw new IllegalArgumentException("New tags cannot be null or empty");
+        }
+        if (!images.stream().anyMatch(img -> img.name().equals(name))) {
+            throw new IllegalArgumentException("Image with this name does not exist");
+        }
+
+        for (Image img : images) {
+            if (img.name().equals(name)) {
+                images.remove(img);
+                images.add(new Image(img.name(), img.date(), newTags, img.location()));
+                break;
+            }
+        }
+    }
+
+    public void updateDate(String name, String newDate) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or blank");
+        }
+        if (newDate == null || newDate.isBlank()) {
+            throw new IllegalArgumentException("New date cannot be null or blank");
+        }
+        if (!images.stream().anyMatch(img -> img.name().equals(name))) {
+            throw new IllegalArgumentException("Image with this name does not exist");
+        }
+
+        for (Image img : images) {
+            if (img.name().equals(name)) {
+                images.remove(img);
+                images.add(new Image(img.name(), img.date(), img.tags(), img.location()));
+                break;
+            }
+        }
+    }
+
+    public void update(String name, String newName, String newLocation, List<String> newTags) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or blank");
+        }
+        if (newName == null || newName.isBlank()) {
+            throw new IllegalArgumentException("New name cannot be null or blank");
+        }
+        if (newLocation == null || newLocation.isBlank()) {
+            throw new IllegalArgumentException("New location cannot be null or blank");
+        }
+        if (newTags == null || newTags.isEmpty()) {
+            throw new IllegalArgumentException("New tags cannot be null or empty");
+        }
+        if (!images.stream().anyMatch(img -> img.name().equals(name))) {
+            throw new IllegalArgumentException("Image with this name does not exist");
+        }
+
+        for (Image img : images) {
+            if (img.name().equals(name)) {
+                images.remove(img);
+                images.add(new Image(newName, img.date(), newTags, newLocation));
+                break;
+            }
+        }
+    }
 }

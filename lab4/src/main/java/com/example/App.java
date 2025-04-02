@@ -39,7 +39,7 @@ public class App {
                 }
 
                 int count = 0;
-                int max = 15;
+                int max = 20;
 
                 while (count < max) {
                         int i = random.nextInt(locs.length);
@@ -52,9 +52,6 @@ public class App {
                         double time = random.nextDouble() * 100;
                         int round = (int) (time * 100);
 
-                        if (round % 3 == 1) {
-                                round = 0;
-                        }
                         time = (double) round / 100;
 
                         if (time != 0) {
@@ -77,7 +74,8 @@ public class App {
                                 continue;
                         }
                         System.out.println(locs[0].toString() + " to " + loc.toString() + " takes "
-                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc)) + " with a probability of "
+                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc))
+                                        + " hours, safe probability "
                                         + map.getsafeProbability(locs[0], loc) + "%");
                 }
 
@@ -85,7 +83,8 @@ public class App {
 
                 for (Location loc : enemy) {
                         System.out.println(locs[0].toString() + " to " + loc.toString() + " takes "
-                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc)) + " with probability "
+                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc))
+                                        + " hours, safe probability "
                                         + map.getsafeProbability(locs[0], loc) + "%");
                 }
 
@@ -93,7 +92,7 @@ public class App {
 
                 for (Location loc : neutral) {
                         System.out.println(locs[0].toString() + " to " + loc.toString() + " takes "
-                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc)) + " with probability "
+                                        + String.valueOf(map.getTimeFromAtoB(locs[0], loc)) + "hours, safe probability "
                                         + map.getsafeProbability(locs[0], loc) + "%");
                 }
 
