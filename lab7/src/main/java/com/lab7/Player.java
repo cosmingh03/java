@@ -2,12 +2,14 @@ package com.lab7;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Player implements Runnable {
     private final String name;
     private final Game game;
     private int score = 0;
     private final List<Tile> tiles = new ArrayList<>();
+    private final Random random = new Random();
 
     public Player(String name, Game game) {
         this.name = name;
@@ -22,44 +24,87 @@ public class Player implements Runnable {
         return score;
     }
 
+    private void createAndSubmitWord() {
+        if (tiles.isEmpty()) {
+            List<Tile> newTiles = game.getBag().extractTiles(7);
+            tiles.addAll(newTiles);
+            System.out.println(name + " extracted " + newTiles.size() + " tiles");
+        }
+
+        String word = game.getDictionary().findValidWord(tiles);
+
+        if (word != null && !word.isEmpty()) {
+            int wordPoints = 0;
+
+            for (char c : word.toCharArray()) {
+                for (int i = 0; i < tiles.size(); i++) {
+                    Tile tile = tiles.get(i);
+                    if (tile.getLetter() == c) {
+                        wordPoints += tile.getPoints();
+                        tiles.remove(i);
+                        break;
+                    }
+                }
+            }
+            score += wordPoints;
+            game.getBoard().addWord(this, word, wordPoints);
+
+            int k = word.length();
+            if (!game.getBag().isEmpty()) {
+                List<Tile> newTiles = game.getBag().extractTiles(k);
+                tiles.addAll(newTiles);
+                System.out.println(name + " extracted " + newTiles.size() + " new tiles");
+            }
+        } else {
+            System.out.println(name + " can t form a word, turn passed");
+
+            tiles.clear();
+
+            if (!game.getBag().isEmpty()) {
+                List<Tile> newTiles = game.getBag().extractTiles(7);
+                tiles.addAll(newTiles);
+                System.out.println(name + " extracted " + newTiles.size() + " new tiles");
+            }
+        }
+    }
+
     @Override
     public void run() {
-        for (int round = 1; round <= 3; round++) {
+        while (game.isGameActive() && (!game.getBag().isEmpty() || !tiles.isEmpty())) {
             synchronized (game) {
-                while (game.getCurrentRound() != round) {
+                while (game.isGameActive() && !game.isPlayerTurn(this)) {
                     try {
-                        game.wait();
+                        game.wait(100);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         return;
                     }
                 }
 
-                if (tiles.isEmpty()) {
-                    tiles.addAll(game.getBag().extractTiles(7));
+                if (!game.isGameActive()) {
+                    break;
                 }
 
-                StringBuilder word = new StringBuilder();
-                int wordPoints = 0;
+                createAndSubmitWord();
 
-                List<Tile> usedTiles = new ArrayList<>();
-                for (int i = 0; i < 4 && i < tiles.size(); i++) {
-                    Tile tile = tiles.get(i);
-                    word.append(tile.getLetter());
-                    wordPoints += tile.getPoints();
-                    usedTiles.add(tile);
+                if (game.getBag().isEmpty() && tiles.isEmpty()) {
+                    break;
                 }
 
-                tiles.removeAll(usedTiles);
+                try {
+                    Thread.sleep(random.nextInt(300) + 200);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
 
-                score += wordPoints;
-                game.getBoard().addWord(this, word.toString(), wordPoints);
-
-                game.playerFinishedTurn();
+                if (game.isGameActive()) {
+                    game.playerFinishedTurn();
+                } else {
+                    break;
+                }
             }
         }
 
-        System.out.println(name + " - " + score + " points");
-        System.out.println(name + " finished");
+        System.out.println("\n" + name + " finished with " + score + " points");
     }
 }
